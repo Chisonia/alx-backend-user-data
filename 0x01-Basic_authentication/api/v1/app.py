@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """API entry point."""
 from os import getenv
+from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import CORS
 from api.v1.auth.auth import Auth
+from api.v1.auth.basic_auth import BasicAuth  # Import the BasicAuth class
 
 app = Flask(__name__)
+app.register_blueprint(app_views)
 CORS(app)
 
 auth = None
-auth_type = getenv("AUTH_TYPE")
-if auth_type == "auth":
-    auth = Auth()
+auth_type = getenv("AUTH_TYPE")  # Get the AUTH_TYPE environment variable
+
+# Use BasicAuth if AUTH_TYPE is set to 'basic_auth', else fall back to Auth
+if auth_type == "basic_auth":
+    auth = BasicAuth()  # Create an instance of BasicAuth
+elif auth_type == "auth":
+    auth = Auth()  # Fallback to Auth
 
 
 @app.before_request

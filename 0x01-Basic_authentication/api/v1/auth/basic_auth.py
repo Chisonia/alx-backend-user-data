@@ -2,6 +2,7 @@
 """ BasicAuth module """
 from api.v1.auth.auth import Auth
 import base64
+from typing import Tuple
 
 
 class BasicAuth(Auth):
@@ -46,7 +47,7 @@ class BasicAuth(Auth):
         except (base64.binascii.Error, UnicodeDecodeError):
             return None
 
-    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> tuple[str, str]:  # noqa E501
+    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> Tuple[str, str]:  # noqa E501
         """
         Extracts the user email and password from the Base64 decoded value.
 

@@ -87,7 +87,7 @@ class BasicAuth(Auth):
 
         # Search for users with the given email
         users = User.search({'email': user_email})
-        if not users or len(users) == 0:
+        if not users:
             return None
 
         # There should be only one user with this email

@@ -79,21 +79,28 @@ class BasicAuth(Auth):
         Returns:
             User: The matching User instance, or None if no match is found.
         """
-
-        if user_email is None or not isinstance(user_email, str):
+        # Validate email and password
+        if not user_email or not isinstance(user_email, str):
             return None
-        if user_pwd is None or not isinstance(user_pwd, str):
-            return None
-
-        # Search for users with the given email
-        users = User.search({'email': user_email})
-        if not users:
+        if not user_pwd or not isinstance(user_pwd, str):
             return None
 
-        # There should be only one user with this email
-        user = users[0]
+        try:
+            # Search for the user by email
+            users = User.search({'email': user_email})
+            if not users or len(users) == 0:  # If no users are found
+                return None
 
-        # Validate the password
-        if not user.is_valid_password(user_pwd):
+            # Assuming email is unique, fetch the first user
+            user = users[0]
+
+            # Validate the password
+            if not user.is_valid_password(user_pwd):
+                return None
+
+            return user
+
+        except Exception as e:
+            # Log the exception if needed and return None
+            print(f"Error during user lookup: {e}")
             return None
-        return user

@@ -101,6 +101,4 @@ class BasicAuth(Auth):
             return user
 
         except Exception as e:
-            # Log the exception if needed and return None
-            print(f"Error during user lookup: {e}")
             return None

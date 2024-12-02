@@ -3,6 +3,8 @@
 import re
 import logging
 from typing import List
+# Define the constant PII_FIELDS
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields, redaction, message, seperator):
@@ -48,3 +50,23 @@ class RedactingFormatter(logging.Formatter):
         """
         record.msg = filter_datum(self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR)  # noqa E501
         return super().format(record)
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and configures a logger named 'user_data'.
+
+    Returns:
+        logging.Logger: Configured logger instance.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)  # Log only up to INFO level
+    logger.propagate = False  # Do not propagate messages to other loggers
+
+    # Set up the StreamHandler with RedactingFormatter
+    handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    handler.setFormatter(formatter)
+
+    logger.addHandler(handler)
+    return logger
